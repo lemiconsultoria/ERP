@@ -3,7 +3,7 @@ O objetivo desde projeto é realizar uma prova de conceito de arquitetura de sof
 
 Neste projeto, foram adotadas tecnologias para atender a diferentes propósitos, com a finalidade de desenvolver uma arquitetura técnica que atendesse os requisitos do cliente.
 # Escopo Solicitado
-![escopo](https://github.com/leanasousa/ERP/blob/master/docs/escopo.png)
+![escopo](https://github.com/lemiconsultoria/ERP/blob/master/docs/escopo.png)
 
 ## Descrição da Solução
 Para o desenvolvimento dos requisitos funcionais solicitados pelo cliente, a visão de implementação esta descrita a seguir:
@@ -30,7 +30,7 @@ Nesta seção, são apresentados informações que compõem a arquitetura de apl
 - IoC
 
 ### Desenho dos serviços - Comunicação
-![diagrama2](https://github.com/leanasousa/ERP/blob/master/docs/arquitetura.png)
+![diagrama2](https://github.com/lemiconsultoria/ERP/blob/master/docs/arquitetura.png)
 
 ### Microserviços
 | Nome | Objetivo | 
