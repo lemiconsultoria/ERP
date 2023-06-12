@@ -1,0 +1,143 @@
+version: '3.4'
+
+name: erp
+
+services:        
+  mysql-erp:
+    container_name: mysql-erp
+    image: mysql:8.0
+    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: erp_crud
+      MYSQL_USER: erp_crud_user
+      MYSQL_PASSWORD: erp_crud_pass
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    ports:
+      - '3306:3306'
+    restart: on-failure
+    volumes:
+      - './volumes/mysql-cashflow/data:/var/lib/mysql'
+      - './volumes/mysql-cashflow/my.cnf:/etc/mysql/conf.d/my.cnf'
+      - './volumes/mysql-cashflow/sql:/docker-entrypoint-initdb.d'
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=root --execute \"SHOW DATABASES;\""
+      interval: 10s
+      timeout: 20s
+      retries: 10
+      
+  rabbitmq-erp:
+    container_name: 'rabbitmq-erp'
+    image: rabbitmq:3-management-alpine    
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - './volumes/rabbitmq/data/:/var/lib/rabbitmq/'
+        - './volumes/rabbitmq/log/:/var/log/rabbitmq'
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 30s
+      retries: 3
+
+  mongo-erp:
+    container_name: mongo-erp
+    image: mongo:6-jammy
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin      
+    ports:
+      - '27017:27017'
+    volumes:
+      - './volumes/mongodb/data/:/data/db'      
+
+      
+  erp-gateway:
+    container_name: erp-gateway
+    image: ${DOCKER_REGISTRY-}erpgateway
+    build:
+      context: .
+      dockerfile: ERP.Gateway\Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Container
+    ports:
+      - "5000:80"      
+    restart: on-failure
+    depends_on:
+      mysql-erp:
+        condition: service_healthy 
+      rabbitmq-erp:
+        condition: service_healthy
+      mongo-erp:
+        condition: service_started
+        
+  erp-identity:
+    container_name: erp-identity
+    image: ${DOCKER_REGISTRY-}erpidentity
+    build:
+      context: .
+      dockerfile: ERP.Identity.API\Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Container
+    ports:
+      - "5010:80"      
+    restart: on-failure
+        
+  erp-crud:
+    container_name: erp-crud
+    image: ${DOCKER_REGISTRY-}erpcrud
+    build:
+      context: .
+      dockerfile: ERP.Crud.API\Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Container
+    ports:
+      - "5020:80"      
+    restart: on-failure
+    depends_on:
+      mysql-erp:
+        condition: service_healthy 
+      rabbitmq-erp:
+        condition: service_healthy
+      mongo-erp:
+        condition: service_started
+        
+  erp-report:
+    container_name: erp-report
+    image: ${DOCKER_REGISTRY-}erpreport
+    build:
+      context: .
+      dockerfile: ERP.Report.API\Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Container
+    ports:
+      - "5030:80"      
+    restart: on-failure
+    depends_on:
+      mysql-erp:
+        condition: service_healthy 
+      rabbitmq-erp:
+        condition: service_healthy
+      mongo-erp:
+        condition: service_started
+        
+  erp-consolidator:
+    container_name: erp-consolidator
+    image: ${DOCKER_REGISTRY-}erpconsolidator
+    build:
+      context: .
+      dockerfile: ERP.Consolidator.API\Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Container
+    ports:
+      - "5040:80"      
+    restart: on-failure
+    depends_on:
+      mysql-erp:
+        condition: service_healthy 
+      rabbitmq-erp:
+        condition: service_healthy
+      mongo-erp:
+        condition: service_started
+      

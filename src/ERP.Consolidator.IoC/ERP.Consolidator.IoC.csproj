@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ERP.Consolidator.Application\ERP.Consolidator.Application.csproj" />
+    <ProjectReference Include="..\ERP.Consolidator.Domain\ERP.Consolidator.Domain.csproj" />
+    <ProjectReference Include="..\ERP.Consolidator.Infra.Data\ERP.Consolidator.Infra.Data.csproj" />
+    <ProjectReference Include="..\ERP.Consolidator.Infra.Jobs\ERP.Consolidator.Infra.Jobs.csproj" />
+    <ProjectReference Include="..\ERP.Consolidator.Infra.Messaging\ERP.Consolidator.Infra.Messaging.csproj" />
+    <ProjectReference Include="..\ERP.Core\ERP.Core.csproj" />
+  </ItemGroup>
+
+</Project>

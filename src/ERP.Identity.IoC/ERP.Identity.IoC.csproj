@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ERP.Identity.Application\ERP.Identity.Application.csproj" />
+    <ProjectReference Include="..\ERP.Identity.Infra.Data\ERP.Identity.Infra.Data.csproj" />
+  </ItemGroup>
+
+</Project>
